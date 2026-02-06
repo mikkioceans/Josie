@@ -1086,7 +1086,7 @@
     noBtn.addEventListener(evt, (e) => {
       e.preventDefault();
       moveNoButton();
-      modalFootnote.textContent = `Nice try 😌💨.. NO WILL VANISH WAII.. YOU LOVE ME OO Hwɛ,😂😂😂`;
+      modalFootnote.textContent = `Nice try 😌💨.. THE NO OPTION WILL VANISH WAII.. YOU LOVE ME OO Hwɛ,😂😂😂`;
     }, { passive: false });
   });
 

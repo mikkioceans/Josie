@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Valentine</title>
+  <link rel="stylesheet" href="josie.css" />
+</head>
+<body>
+  <div class="app">
+
+    <!-- LANDING -->
+    <section class="screen screen--active" id="landing" aria-label="Landing page">
+      <div class="landing-bg" aria-hidden="true"></div>
+
+      <div class="landing-card">
+        <div class="brand">
+          <span class="brand-dot" aria-hidden="true"></span>
+          <h1 class="brand-title">Dear Josie❤️</h1>
+        </div>
+
+        <p class="landing-text">
+          I made something small, just to show you how much <b>I LOVE YOU❤️</b>.<br>
+          This is a little Valentine’s gift for you, and I hope it makes you smile. 😊
+
+          This is just a fun, interactive way to say: You’re amazing, and I’m so lucky to have you in my life. I have 10 slides, each
+          page is a little message from my heart to you. I hope you enjoy it!
+
+
+        </p>
+
+        <div class="landing-actions">
+          <button type="button" class="btn btn--primary" id="startBtn">Start</button>
+          <button type="button" class="btn btn--ghost" id="previewBtn">Preview slides</button>
+        </div>
+
+        <p class="landing-hint">Tip: Use ← → or swipe</p>
+      </div>
+    </section>
+
+    <!-- CAROUSEL -->
+    <section class="screen" id="carousel" aria-label="Carousel">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button type="button" class="btn btn--ghost" id="backToLandingBtn">← Back</button>
+
+          <div class="topbar-titleWrap">
+            <span class="brand-dot brand-dot--small" aria-hidden="true"></span>
+            <p class="topbar-title">Josie's Valentine Carousel❤️ - Only for Josie❤️</p>
+          </div>
+        </div>
+
+        <p class="topbar-hint">Swipe ⟷ or keys ← → / Space</p>
+      </header>
+
+      <main class="stage">
+        <section class="slider" id="slider" aria-label="Slides"></section>
+      </main>
+
+      <nav class="dots" id="dots" aria-label="Slide dots"></nav>
+    </section>
+
+    <!-- MODAL -->
+    <div class="modal" id="modal" aria-hidden="true">
+      <div class="modal-backdrop" id="modalBackdrop"></div>
+
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <p class="modal-text" id="modalText"></p>
+
+        <div class="modal-actions" id="modalActions">
+          <button type="button" class="btn btn--primary" id="yesBtn">Yes 💖</button>
+          <button type="button" class="btn btn--ghost" id="noBtn">No 🙂</button>
+        </div>
+
+        <p class="modal-footnote" id="modalFootnote"></p>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="josie.js"></script>
+</body>
+</html>

@@ -1,0 +1,779 @@
+:root{
+  --bg: #120014;
+  --text: rgba(255,255,255,.95);
+  --muted: rgba(255,255,255,.78);
+
+  --pink-strong: #ff4d8d;
+  --pink-soft: #ff8fb3;
+
+  --turquoise-strong: #2ec4b6;
+  --turquoise-soft: #7be0d6;
+
+  --glass: rgba(255, 77, 141, 0.22);
+  --glass2: rgba(46, 196, 182, 0.18);
+  --border: rgba(255,255,255,.18);
+
+  --shadow: 0 18px 55px rgba(0,0,0,.45);
+  --radius: 18px;
+}
+
+*{ box-sizing: border-box; }
+
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background:
+    radial-gradient(900px 500px at 20% 10%, rgba(255,77,141,.16), transparent 60%),
+    radial-gradient(900px 500px at 80% 20%, rgba(46,196,182,.14), transparent 60%),
+    var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app{
+  height: 100vh;
+  position: relative;
+}
+
+/* =========================
+   Screens
+========================= */
+.screen{
+  position: absolute;
+  inset: 0;
+  display: none;
+}
+.screen--active{
+  display: grid;
+}
+
+/* =========================
+   Landing
+========================= */
+#landing{
+  position: relative;
+  place-items: center;
+  padding: 18px;
+  overflow: hidden;
+}
+
+/* Optional video background support */
+.landing-bg{
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none; /* ✅ never block clicks */
+}
+
+.landing-video{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(1.15) contrast(1.05);
+  transform: scale(1.02);
+  pointer-events: none; /* ✅ never block clicks */
+}
+
+.landing-vignette{
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(900px 500px at 20% 10%, rgba(255,77,141,.25), transparent 60%),
+    radial-gradient(900px 500px at 80% 20%, rgba(46,196,182,.18), transparent 60%),
+    linear-gradient(to top, rgba(0,0,0,.75), rgba(0,0,0,.20));
+  pointer-events: none; /* ✅ never block clicks */
+}
+
+.landing-card{
+  position: relative;
+  z-index: 2; /* ✅ always above landing bg */
+  width: min(720px, 94vw);
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: var(--shadow);
+  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+  padding: 22px 18px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  user-select:none;
+  margin-bottom: 10px;
+}
+
+.brand-dot{
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--pink-strong), var(--turquoise-strong));
+  box-shadow: 0 0 0 4px rgba(255,77,141,.22);
+}
+
+.brand-dot--small{
+  width: 10px;
+  height: 10px;
+  box-shadow: 0 0 0 3px rgba(255,77,141,.16);
+}
+
+.brand-title{
+  margin:0;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: .2px;
+}
+
+.landing-text{
+  margin: 10px 0 16px;
+  line-height: 1.5;
+}
+
+.landing-actions{
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.landing-hint{
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* =========================
+   Carousel layout
+========================= */
+#carousel{
+  grid-template-rows: auto 1fr auto;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  gap: 12px;
+}
+
+.topbar-left{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+
+.topbar-titleWrap{
+  display:flex;
+  align-items:center;
+  gap: 8px;
+}
+
+.topbar-title{
+  margin:0;
+  font-weight: 900;
+  letter-spacing: .2px;
+  font-size: 14px;
+}
+
+.topbar-hint{
+  margin:0;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: right;
+}
+
+.stage{
+  display:grid;
+  place-items:center;
+  padding: 10px 16px 18px;
+}
+
+.slider{
+  width: min(980px, 96vw);
+  height: min(640px, 74vh);
+  border-radius: var(--radius);
+  overflow:hidden;
+  position: relative;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,.08);
+  background: #111;
+  touch-action: pan-y;
+
+  /* ✅ prevents weird stacking/click issues in some browsers */
+  isolation: isolate;
+}
+
+/* =========================
+   Slides (FIXED CLICK ISSUE)
+========================= */
+.slide{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  transform: scale(1.02);
+  transition: opacity .35s ease, transform .35s ease;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  pointer-events: none; /* ✅ inactive slides never steal clicks */
+  z-index: 0;
+
+  /* ✅ forces stable stacking contexts across browsers */
+  isolation: isolate;
+}
+
+.slide.active{
+  opacity:1;
+  transform: scale(1.0);
+
+  pointer-events: auto; /* ✅ only active slide clickable */
+  z-index: 1;
+}
+
+.overlay{
+  position:absolute;
+  inset:0;
+  z-index: 1;          /* ✅ behind content */
+  pointer-events: none;/* ✅ never steal clicks */
+  background:
+    radial-gradient(1200px 500px at 15% 10%, rgba(0,0,0,.12), transparent 60%),
+    linear-gradient(to top, rgba(0,0,0,.64) 0%, rgba(0,0,0,.20) 55%, rgba(0,0,0,.10) 100%);
+}
+
+.content{
+  position:absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+  z-index: 2;          /* ✅ always above overlay */
+  pointer-events: auto;/* ✅ guaranteed clickable */
+
+  padding: 18px 16px;
+  background: linear-gradient(180deg, var(--glass), var(--glass2));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ✅ make sure buttons are always on top */
+.controls, .controls *{
+  position: relative;
+  z-index: 3;
+}
+
+.kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: .25px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  user-select:none;
+}
+
+.pill{
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.10);
+}
+
+.title{
+  margin: 0 0 6px 0;
+  font-size: clamp(22px, 3.2vw, 34px);
+  line-height: 1.1;
+  letter-spacing: -0.2px;
+  font-weight: 950;
+  text-shadow: 0 6px 20px rgba(0,0,0,.35);
+}
+
+.desc{
+  margin: 0 0 12px 0;
+  font-size: clamp(14px, 1.5vw, 16px);
+  line-height: 1.45;
+  opacity: .98;
+}
+
+.footerRow{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.progressText{
+  font-size: 12px;
+  color: var(--muted);
+  user-select:none;
+}
+
+.controls{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+
+/* =========================
+   Buttons
+========================= */
+.btn{
+  appearance: none;
+  border: 1px solid rgba(255,255,255,.22);
+  background: rgba(255,255,255,.10);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform .08s ease, background .18s ease, box-shadow .18s ease;
+  font-weight: 900;
+}
+
+.btn:hover{ background: rgba(255,255,255,.16); }
+.btn:active{ transform: translateY(1px); }
+
+.btn:focus-visible{
+  outline: 2px solid rgba(46,196,182,.75);
+  outline-offset: 2px;
+}
+
+.btn--primary{
+  background: linear-gradient(135deg, var(--pink-strong), var(--pink-soft));
+  border: none;
+  box-shadow: 0 10px 34px rgba(255,77,141,.45);
+}
+
+.btn--primary:hover{
+  box-shadow: 0 12px 40px rgba(255,77,141,.60);
+}
+
+.btn--ghost{
+  background: rgba(46,196,182,.14);
+  border: 1px solid rgba(46,196,182,.35);
+}
+
+/* =========================
+   Dots
+========================= */
+.dots{
+  display:flex;
+  gap: 6px;
+  align-items:center;
+  flex-wrap: wrap;
+  padding: 10px 16px 18px;
+  justify-content:center;
+}
+
+.dotBtn{
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.35);
+  background: rgba(255,255,255,.18);
+  cursor:pointer;
+  padding:0;
+}
+
+.dotBtn.active{
+  background: linear-gradient(135deg, var(--pink-strong), var(--turquoise-strong));
+  border-color: rgba(255,255,255,.65);
+  transform: scale(1.2);
+}
+
+/* =========================
+   Modal
+========================= */
+.modal{
+  position: absolute;
+  inset: 0;
+  display: none;
+  z-index: 9999;
+}
+
+.modal.modal--open{
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+
+.modal-backdrop{
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,.72);
+}
+
+.modal-card{
+  position: relative;
+  width: min(560px, 92vw);
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: var(--shadow);
+  background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
+  padding: 20px 18px;
+  overflow: hidden;
+}
+
+.modal-title{
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 950;
+}
+
+.modal-text{
+  margin: 0 0 14px;
+  line-height: 1.5;
+}
+
+.modal-actions{
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.modal-footnote{
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Fireworks FX layer */
+.fx{
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* ✅ never block clicks */
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+
+.fx.fx--show{
+  opacity: 1;
+}
+
+.fx canvas{
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+@media (max-width: 420px){
+  .topbar-hint{ display:none; }
+}
+
+
+
+
+
+
+///// OLD JS CODE
+
+
+(() => {
+  // ========= Customize =========
+  const herName = "Ohemaa"; // change this
+  const bg = (seed) => `https://picsum.photos/seed/${seed}/1600/900`;
+
+  const slidesData = [
+    { kicker:"Page 1",  title:`Hey ${herName} 👋`, desc:"I made something small… but meaningful.", img:bg("pink1") },
+    { kicker:"Page 2",  title:"Quick vibe check ✅", desc:"If you're smiling right now, that's already a win.", img:bg("pink2") },
+    { kicker:"Page 3",  title:"This is intentional", desc:"Not perfect — but built with effort (and care).", img:bg("pink3") },
+    { kicker:"Page 4",  title:"You stand out", desc:"Your energy, your mind, your presence — it’s special.", img:bg("pink4") },
+    { kicker:"Page 5",  title:"Simple plan", desc:"Good food. Good laughs. Good vibes. That’s it.", img:bg("pink5") },
+    { kicker:"Page 6",  title:"Real talk", desc:"I didn’t want to send a boring text.", img:bg("pink6") },
+    { kicker:"Page 7",  title:"Almost there…", desc:"One more slide and I’ll ask properly 😅", img:bg("pink7") },
+    { kicker:"Page 8",  title:"Deep breath", desc:"Okay… here we go.", img:bg("pink8") },
+    { kicker:"Page 9",  title:"You deserve effort", desc:"So I’m asking in a cute way — because you matter.", img:bg("pink9") },
+    { kicker:"Page 10", title:"Ready? 💌", desc:"Tap the button below to pop the question.", img:bg("pink10") },
+  ];
+
+  // ========= Elements =========
+  const landing = document.getElementById("landing");
+  const carousel = document.getElementById("carousel");
+  const startBtn = document.getElementById("startBtn");
+  const previewBtn = document.getElementById("previewBtn");
+  const backToLandingBtn = document.getElementById("backToLandingBtn");
+
+  const slider = document.getElementById("slider");
+  const dots = document.getElementById("dots");
+
+  const modal = document.getElementById("modal");
+  const modalBackdrop = document.getElementById("modalBackdrop");
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn = document.getElementById("noBtn");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalText = document.getElementById("modalText");
+  const modalFootnote = document.getElementById("modalFootnote");
+
+  if (!landing || !carousel || !slider || !dots || !modal) return;
+
+  // ========= Create fireworks layer (canvas) =========
+  const modalCard = modal.querySelector(".modal-card");
+  const fx = document.createElement("div");
+  fx.className = "fx";
+  fx.innerHTML = `<canvas id="fxCanvas"></canvas>`;
+  if (modalCard) modalCard.appendChild(fx);
+
+  const fxCanvas = fx.querySelector("#fxCanvas");
+  const ctx = fxCanvas ? fxCanvas.getContext("2d") : null;
+
+  let current = 0;
+  let isModalOpen = false;
+  let fxRunning = false;
+  let particles = [];
+  let rafId = 0;
+  let burstTimer = 0;
+
+  // ========= Screen switching =========
+  function showScreen(which){
+    if (which === "landing") {
+      landing.classList.add("screen--active");
+      carousel.classList.remove("screen--active");
+      closeModal();
+    } else {
+      landing.classList.remove("screen--active");
+      carousel.classList.add("screen--active");
+    }
+  }
+
+  // ========= Build slides =========
+  const slideEls = slidesData.map((s, idx) => {
+    const el = document.createElement("article");
+    el.className = "slide" + (idx === 0 ? " active" : "");
+    el.style.backgroundImage = `url("${s.img}")`;
+
+    const isLast = idx === slidesData.length - 1;
+
+    el.innerHTML = `
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="kicker">
+          <span class="pill">${s.kicker}</span>
+          <span>•</span>
+          <span>${idx + 1}/${slidesData.length}</span>
+        </div>
+
+        <h2 class="title">${s.title}</h2>
+        <p class="desc">${s.desc}</p>
+
+        <div class="footerRow">
+          <div class="progressText">${isLast ? "Last slide 🎉" : "Tip: swipe left/right or use arrows"}</div>
+          <div class="controls">
+            <button type="button" class="btn btn--ghost prevBtn">← Prev</button>
+            ${
+              isLast
+                ? `<button type="button" class="btn btn--primary askBtn">Pop the question 💖</button>`
+                : `<button type="button" class="btn btn--primary nextBtn">Next →</button>`
+            }
+          </div>
+        </div>
+      </div>
+    `;
+
+    slider.appendChild(el);
+    return el;
+  });
+
+  // ========= Build dots =========
+  const dotEls = slidesData.map((_, idx) => {
+    const b = document.createElement("button");
+    b.className = "dotBtn" + (idx === 0 ? " active" : "");
+    b.type = "button";
+    b.setAttribute("aria-label", `Go to slide ${idx + 1}`);
+    b.addEventListener("click", () => goTo(idx));
+    dots.appendChild(b);
+    return b;
+  });
+
+  // ========= Navigation =========
+  function goTo(index){
+    const total = slideEls.length;
+    const nextIndex = (index + total) % total;
+
+    slideEls[current].classList.remove("active");
+    dotEls[current].classList.remove("active");
+
+    current = nextIndex;
+
+    slideEls[current].classList.add("active");
+    dotEls[current].classList.add("active");
+  }
+
+  function next(){ goTo(current + 1); }
+  function prev(){ goTo(current - 1); }
+
+  // ========= Modal =========
+  function openModal(){
+    isModalOpen = true;
+    modal.classList.add("modal--open");
+    modal.setAttribute("aria-hidden", "false");
+
+    modalTitle.textContent = "Will you be my Valentine? ❤️";
+    modalText.textContent = `${herName}, will you be my Valentine?`;
+    modalFootnote.textContent = "";
+  }
+
+  function closeModal(){
+    isModalOpen = false;
+    modal.classList.remove("modal--open");
+    modal.setAttribute("aria-hidden", "true");
+    stopFireworks();
+  }
+
+  // ========= Fireworks =========
+  function resizeCanvas(){
+    if (!fxCanvas) return;
+    fxCanvas.width = Math.floor(fxCanvas.clientWidth * devicePixelRatio);
+    fxCanvas.height = Math.floor(fxCanvas.clientHeight * devicePixelRatio);
+  }
+
+  function burst(){
+    if (!fxCanvas || !ctx) return;
+
+    const w = fxCanvas.width;
+    const h = fxCanvas.height;
+    const cx = Math.random() * w * 0.9 + w * 0.05;
+    const cy = Math.random() * h * 0.45 + h * 0.05;
+
+    const count = 90;
+    for (let i = 0; i < count; i++){
+      const angle = Math.random() * Math.PI * 2;
+      const speed = (Math.random() * 4 + 2) * devicePixelRatio;
+      const life = Math.random() * 40 + 40;
+
+      particles.push({
+        x: cx,
+        y: cy,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        g: 0.07 * devicePixelRatio,
+        life,
+        maxLife: life,
+        hue: Math.random() < 0.6 ? 330 : 175, // pink vs turquoise
+      });
+    }
+  }
+
+  function draw(){
+    if (!fxCanvas || !ctx) return;
+
+    const w = fxCanvas.width;
+    const h = fxCanvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    particles = particles.filter(p => p.life > 0);
+
+    for (const p of particles){
+      p.life -= 1;
+      p.vy += p.g;
+      p.x += p.vx;
+      p.y += p.vy;
+
+      const alpha = Math.max(0, p.life / p.maxLife);
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2.2 * devicePixelRatio, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${p.hue}, 95%, 65%, ${alpha})`;
+      ctx.fill();
+    }
+  }
+
+  function startFireworks(){
+    if (fxRunning) return;
+    fxRunning = true;
+
+    fx.classList.add("fx--show");
+    resizeCanvas();
+
+    burst();
+    burstTimer = window.setInterval(burst, 450);
+
+    const loop = () => {
+      draw();
+      rafId = requestAnimationFrame(loop);
+    };
+    loop();
+  }
+
+  function stopFireworks(){
+    fxRunning = false;
+    fx.classList.remove("fx--show");
+    particles = [];
+    if (burstTimer) clearInterval(burstTimer);
+    if (rafId) cancelAnimationFrame(rafId);
+  }
+
+  window.addEventListener("resize", () => {
+    if (fxRunning) resizeCanvas();
+  });
+
+  // ========= Events =========
+  startBtn.addEventListener("click", () => { showScreen("carousel"); goTo(0); });
+  previewBtn.addEventListener("click", () => { showScreen("carousel"); goTo(0); });
+  backToLandingBtn.addEventListener("click", () => showScreen("landing"));
+
+  slider.addEventListener("click", (e) => {
+    const t = e.target;
+    if (!(t instanceof Element)) return;
+
+    if (t.classList.contains("nextBtn")) next();
+    if (t.classList.contains("prevBtn")) prev();
+    if (t.classList.contains("askBtn")) openModal();
+  });
+
+  modalBackdrop.addEventListener("click", closeModal);
+
+  yesBtn.addEventListener("click", () => {
+    modalFootnote.textContent = "Yessss! 😭💖 Okay… I’m celebrating!!";
+    startFireworks();
+  });
+
+  noBtn.addEventListener("click", () => {
+    modalFootnote.textContent = `Oh ${herName} NOOO 😭 ...try again 😅`;
+    setTimeout(() => {
+      modalTitle.textContent = "Please reconsider 🥺";
+      modalText.textContent = `${herName}, will you be my Valentine? ❤️`;
+    }, 650);
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (isModalOpen) {
+      if (e.key === "Escape") closeModal();
+      return;
+    }
+    if (!carousel.classList.contains("screen--active")) return;
+    if (e.key === "ArrowRight" || e.key === " ") next();
+    if (e.key === "ArrowLeft") prev();
+  });
+
+  let startX = 0;
+  let isDown = false;
+
+  slider.addEventListener("pointerdown", (e) => {
+    if (isModalOpen) return;
+    isDown = true;
+    startX = e.clientX;
+    slider.setPointerCapture(e.pointerId);
+  });
+
+  slider.addEventListener("pointerup", (e) => {
+    if (!isDown) return;
+    isDown = false;
+    const dx = e.clientX - startX;
+    const threshold = 50;
+    if (dx > threshold) prev();
+    else if (dx < -threshold) next();
+  });
+
+  slider.addEventListener("pointercancel", () => { isDown = false; });
+
+  slidesData.forEach(s => { const img = new Image(); img.src = s.img; });
+
+  showScreen("landing");
+})();
